@@ -5,8 +5,7 @@ on:
     - cron: "13 * * * *"
       timezone: "Europe/Berlin"
 
-  workflow_dispatch:
-
+ 
   workflow_dispatch:
 
 jobs:
