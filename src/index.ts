@@ -165,6 +165,12 @@ const startMainLoop = async (): Promise<void> => {
 };
 
 // Start the application
-startMainLoop().catch(error => {
-  console.error('Fatal error in main loop:', error);
-});
+executeAutomation()
+  .then(() => {
+    console.log('Check finished.');
+    process.exit(0);
+  })
+  .catch(error => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });
