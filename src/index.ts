@@ -78,18 +78,39 @@ const performLogin = async (page: Page): Promise<void> => {
     throw new Error('Username or password not found in environment variables');
   }
 
-  console.log(`Logging in with username: ${USERNAME}`);
+  console.log('Filling login form...');
 
   await page.locator(SELECTORS.USERNAME_FIELD).fill(USERNAME);
-  await wait(TIMEOUTS.SHORT_WAIT);
-
   await page.locator(SELECTORS.PASSWORD_FIELD).fill(PASSWORD);
-  await wait(TIMEOUTS.SHORT_WAIT);
 
-  await page.locator(SELECTORS.LOGIN_BUTTON).click();
-  await wait(TIMEOUTS.SHORT_WAIT);
+  await wait(2);
+
+  console.log('Trying to submit login...');
+
+  const submitted = await page.evaluate(() => {
+    const elements = Array.from(
+      document.querySelectorAll('button, one-button')
+    );
+
+    const button = elements.find(el =>
+      (el.textContent || '').trim().includes('Anmelden')
+    ) as HTMLElement | undefined;
+
+    if (button) {
+      button.click();
+      return true;
+    }
+
+    return false;
+  });
+
+  if (!submitted) {
+    throw new Error('Login button "Anmelden" not found');
+  }
 
   console.log('Login submitted');
+
+  await wait(5);
 };
 
 const findDataVolumeButton = async (page: Page) => {
